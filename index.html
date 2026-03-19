@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beyond the Feature – Changing Workflows, Not Hunting Features</title>
+  <meta name="description" content="Beyond the Feature with Dr. Patrick Jones – Microsoft 365 productivity tips, podcast, and learning app. Changing workflows not hunting features." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --blue-deep:    #1a3fa8;
+      --blue-royal:   #2451d1;
+      --blue-bright:  #3d6ff0;
+      --blue-sky:     #6a9ff7;
+      --blue-pale:    #dce8ff;
+      --green:        #3cb043;
+      --yellow:       #f5c400;
+      --red:          #e03a2f;
+      --white:        #ffffff;
+      --off-white:    #f4f7ff;
+      --text-dark:    #111827;
+      --text-mid:     #374151;
+      --text-light:   #6b7280;
+      --radius:       16px;
+      --shadow:       0 4px 32px rgba(26,63,168,0.13);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--off-white);
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(26, 63, 168, 0.97);
+      backdrop-filter: blur(10px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.25);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo img { height: 38px; width: auto; }
+    .nav-logo span {
+      font-size: 1.15rem; font-weight: 800; color: var(--white);
+      letter-spacing: -0.01em;
+    }
+    .nav-links { display: flex; gap: 0.25rem; }
+    .nav-links a {
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: 8px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-links a:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .nav-cta {
+      background: var(--yellow) !important;
+      color: var(--blue-deep) !important;
+      padding: 0.4rem 1rem !important;
+    }
+    .nav-cta:hover { background: #ffe040 !important; }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .nav-hamburger span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 60% 40%, #2d5be3 0%, #1a3fa8 45%, #0f2570 100%);
+      display: flex; align-items: center;
+      padding: 80px 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    /* Floating stars */
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(1.5px 1.5px at 15% 20%, rgba(255,255,255,0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 35% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(2px 2px at 70% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 85% 30%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 50% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 20% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(2px 2px at 90% 70%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 50%, rgba(255,200,100,0.5) 0%, transparent 100%);
+    }
+    .hero-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 3rem; align-items: center;
+      position: relative; z-index: 1;
+      width: 100%;
+    }
+    .hero-text { animation: fadeUp 0.8s ease both; }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: var(--yellow);
+      font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.85rem; border-radius: 100px;
+      margin-bottom: 1.25rem;
+    }
+    .hero-text h1 {
+      font-family: 'Nunito', sans-serif;
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-weight: 900; color: var(--white);
+      line-height: 1.1; letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+    .hero-text h1 span { color: var(--yellow); }
+    .hero-tagline {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 1.2rem; color: rgba(255,255,255,0.82);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .hero-desc {
+      font-size: 1rem; color: rgba(255,255,255,0.72);
+      line-height: 1.7; margin-bottom: 2.25rem;
+      max-width: 480px;
+    }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.6rem;
+      border-radius: 100px; font-weight: 800; font-size: 0.95rem;
+      text-decoration: none; cursor: pointer; border: none;
+      transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary {
+      background: var(--yellow); color: var(--blue-deep);
+      box-shadow: 0 4px 18px rgba(245,196,0,0.4);
+    }
+    .btn-primary:hover { background: #ffe040; box-shadow: 0 6px 24px rgba(245,196,0,0.5); }
+    .btn-outline {
+      background: transparent; color: var(--white);
+      border: 2px solid rgba(255,255,255,0.45);
+    }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.7); }
+
+    .hero-image {
+      display: flex; justify-content: center; align-items: center;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+    .hero-image img {
+      width: min(380px, 100%);
+      filter: drop-shadow(0 20px 60px rgba(0,0,0,0.4));
+      animation: float 4s ease-in-out infinite;
+    }
+
+    /* ── TRUST BAR ── */
+    .trust-bar {
+      background: var(--white);
+      padding: 1.25rem 2rem;
+      display: flex; justify-content: center; align-items: center;
+      gap: 2.5rem; flex-wrap: wrap;
+      box-shadow: 0 2px 12px rgba(26,63,168,0.07);
+    }
+    .trust-item {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.88rem; font-weight: 700; color: var(--text-mid);
+    }
+    .trust-item .icon { font-size: 1.2rem; }
+
+    /* ── SECTIONS SHARED ── */
+    section { padding: 5rem 2rem; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.78rem; font-weight: 800; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--blue-royal);
+      margin-bottom: 0.6rem;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 900; letter-spacing: -0.02em;
+      line-height: 1.2; color: var(--text-dark);
+      margin-bottom: 1rem;
+    }
+    .section-sub {
+      font-size: 1.05rem; color: var(--text-light);
+      line-height: 1.7; max-width: 580px;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── PODCAST ── */
+    .podcast-section { background: var(--off-white); }
+    .podcast-grid {
+      display: grid; grid-template-columns: 340px 1fr;
+      gap: 3.5rem; align-items: start;
+    }
+    .podcast-cover {
+      width: 100%; border-radius: 24px;
+      box-shadow: 0 12px 48px rgba(26,63,168,0.18);
+      transition: transform 0.3s;
+    }
+    .podcast-cover:hover { transform: scale(1.02); }
+    .podcast-listen-title {
+      font-size: 1rem; font-weight: 800; color: var(--text-mid);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      margin-bottom: 1rem;
+    }
+    .platform-links { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2rem; }
+    .platform-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.55rem 1.1rem;
+      background: var(--white); border: 2px solid var(--blue-pale);
+      border-radius: 100px; text-decoration: none;
+      font-size: 0.88rem; font-weight: 800; color: var(--blue-deep);
+      transition: all 0.2s;
+    }
+    .platform-btn:hover { background: var(--blue-deep); color: var(--white); border-color: var(--blue-deep); }
+    .episode-list { display: flex; flex-direction: column; gap: 1rem; }
+    .episode-card {
+      background: var(--white);
+      border: 1.5px solid var(--blue-pale);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      display: flex; gap: 1rem; align-items: center;
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+      text-decoration: none; color: inherit;
+    }
+    .episode-card:hover {
+      box-shadow: var(--shadow); border-color: var(--blue-bright);
+      transform: translateY(-2px);
+    }
+    .ep-num {
+      min-width: 44px; height: 44px;
+      background: var(--blue-pale); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 900; color: var(--blue-royal);
+    }
+    .ep-info h4 { font-size: 0.97rem; font-weight: 800; margin-bottom: 0.2rem; }
+    .ep-info p { font-size: 0.82rem; color: var(--text-light); }
+    .ep-arrow { margin-left: auto; color: var(--blue-bright); font-size: 1.1rem; }
+
+    /* ── APP ── */
+    .app-section {
+      background: linear-gradient(135deg, #1a3fa8 0%, #0f2570 100%);
+      position: relative; overflow: hidden;
+    }
+    .app-section::before {
+      content: '';
+      position: absolute; top: -100px; right: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .app-section .section-title,
+    .app-section .section-label { color: var(--white); }
+    .app-section .section-sub { color: rgba(255,255,255,0.7); }
+    .app-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 3rem; align-items: center;
+    }
+    .feature-cards { display: flex; flex-direction: column; gap: 1rem; }
+    .feature-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.4rem;
+      display: flex; gap: 1rem; align-items: flex-start;
+      backdrop-filter: blur(4px);
+      transition: background 0.2s, transform 0.2s;
+    }
+    .feature-card:hover { background: rgba(255,255,255,0.14); transform: translateX(4px); }
+    .feature-icon {
+      font-size: 1.6rem; min-width: 2rem;
+      margin-top: 0.1rem;
+    }
+    .feature-card h4 { font-size: 0.97rem; font-weight: 800; color: var(--white); margin-bottom: 0.25rem; }
+    .feature-card p { font-size: 0.85rem; color: rgba(255,255,255,0.65); line-height: 1.5; }
+    .app-store-btns { display: flex; flex-direction: column; gap: 0.85rem; margin-top: 1.75rem; }
+    .store-btn {
+      display: flex; align-items: center; gap: 0.9rem;
+      background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.25);
+      border-radius: var(--radius); padding: 0.85rem 1.25rem;
+      text-decoration: none; color: var(--white);
+      transition: all 0.2s;
+    }
+    .store-btn:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.5); }
+    .store-btn-icon { font-size: 1.8rem; }
+    .store-btn-label { font-size: 0.72rem; opacity: 0.75; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    .store-btn-name { font-size: 1rem; font-weight: 800; }
+    .app-mockup {
+      display: flex; justify-content: center; align-items: center;
+    }
+    .app-screenshot-wrap {
+      position: relative;
+      display: flex; justify-content: center; align-items: center;
+      animation: float 4s ease-in-out infinite;
+    }
+    .app-screenshot {
+      width: min(300px, 100%);
+      border-radius: 36px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
+      display: block;
+    }
+
+    /* ── INSIGHTS HUB ── */
+    .insights-section { background: var(--white); }
+    .insights-layout {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2.5rem; align-items: start;
+    }
+    .li-panel {
+      background: var(--off-white);
+      border: 1.5px solid var(--blue-pale);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .li-panel-header {
+      background: #0a66c2;
+      padding: 1rem 1.25rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .li-panel-header .li-icon { font-size: 1.4rem; }
+    .li-panel-header h3 { font-size: 1rem; font-weight: 800; color: #fff; flex: 1; }
+    .li-follow-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: #fff; color: #0a66c2;
+      font-size: 0.8rem; font-weight: 800;
+      padding: 0.35rem 0.85rem; border-radius: 100px;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .li-follow-btn:hover { background: #e8f0fe; }
+    .li-posts { padding: 1.1rem; display: flex; flex-direction: column; gap: 0.85rem; }
+    .li-post {
+      background: var(--white);
+      border: 1.5px solid var(--blue-pale);
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+      text-decoration: none; color: inherit;
+      display: block;
+      transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+    }
+    .li-post:hover { box-shadow: var(--shadow); transform: translateY(-2px); border-color: #0a66c2; }
+    .li-post-topic {
+      font-size: 0.7rem; font-weight: 800; color: #0a66c2;
+      text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.4rem;
+    }
+    .li-post p { font-size: 0.9rem; color: var(--text-mid); line-height: 1.55; margin-bottom: 0.5rem; }
+    .li-post-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.75rem; color: var(--text-light); font-weight: 700;
+    }
+    .li-post-footer span { color: #0a66c2; font-weight: 800; }
+    .li-panel-footer {
+      background: #e8f0fe; padding: 0.85rem 1.25rem; text-align: center;
+    }
+    .li-panel-footer a {
+      font-size: 0.88rem; font-weight: 800; color: #0a66c2;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .li-panel-footer a:hover { text-decoration: underline; }
+    .fb-panel {
+      background: var(--off-white);
+      border: 1.5px solid var(--blue-pale);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .fb-panel-header {
+      background: #1877f2; padding: 1rem 1.25rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .fb-panel-header h3 { font-size: 1rem; font-weight: 800; color: #fff; flex: 1; }
+    .fb-follow-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: #fff; color: #1877f2;
+      font-size: 0.8rem; font-weight: 800;
+      padding: 0.35rem 0.85rem; border-radius: 100px;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .fb-follow-btn:hover { background: #e7f0ff; }
+    .fb-embed-area { padding: 1.1rem; min-height: 320px; }
+    .fb-placeholder {
+      background: var(--white); border: 2px dashed var(--blue-pale);
+      border-radius: 12px; padding: 2rem; text-align: center;
+      color: var(--text-light); min-height: 280px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.75rem;
+    }
+    .fb-placeholder .fp-icon { font-size: 2.5rem; }
+    .fb-placeholder strong { font-size: 0.97rem; color: var(--text-dark); font-weight: 800; }
+    .fb-placeholder p { font-size: 0.83rem; line-height: 1.55; max-width: 260px; }
+    .fb-placeholder code {
+      font-size: 0.72rem; background: var(--blue-pale);
+      padding: 0.25rem 0.6rem; border-radius: 6px; color: var(--blue-deep);
+    }
+    .fb-panel-footer {
+      background: #e7f0ff; padding: 0.85rem 1.25rem;
+      font-size: 0.75rem; color: #1877f2; font-weight: 700; text-align: center;
+    }
+    .li-cta-body {
+      padding: 2.5rem 1.5rem;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; gap: 1rem;
+      min-height: 280px; justify-content: center;
+    }
+    .li-cta-icon { font-size: 3rem; }
+    .li-cta-body h4 { font-size: 1.2rem; font-weight: 900; color: var(--text-dark); }
+    .li-cta-body p { font-size: 0.92rem; color: var(--text-mid); line-height: 1.65; max-width: 340px; }
+    .btn-linkedin {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: #0a66c2; color: #fff;
+      padding: 0.75rem 1.5rem; border-radius: 100px;
+      font-size: 0.9rem; font-weight: 800; text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+      margin-top: 0.5rem;
+    }
+    .btn-linkedin:hover { background: #0858a8; transform: translateY(-2px); }
+
+    /* ── AUDITSOLV POWERED-BY ── */
+    .powered-by {
+      background: #111827;
+      padding: 1rem 2rem;
+      display: flex; align-items: center; justify-content: center;
+      gap: 1rem; flex-wrap: wrap;
+    }
+    .powered-by span {
+      font-size: 0.8rem; font-weight: 700;
+      color: rgba(255,255,255,0.45);
+      text-transform: uppercase; letter-spacing: 0.1em;
+    }
+    .powered-by a {
+      display: inline-flex; align-items: center;
+      transition: opacity 0.2s;
+    }
+    .powered-by a:hover { opacity: 0.8; }
+    .powered-by img { height: 26px; width: auto; }
+
+    /* ── ABOUT ── */
+    .about-section { background: var(--white); }
+    .about-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 4rem; align-items: center; }
+    .about-avatar {
+      width: 100%;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 16px 56px rgba(26,63,168,0.22);
+      position: relative;
+    }
+    .about-avatar img {
+      width: 100%; display: block;
+      border-radius: 24px;
+      transition: transform 0.4s;
+    }
+    .about-avatar:hover img { transform: scale(1.03); }
+    .about-avatar .av-name { font-size: 0.9rem; font-weight: 800; color: rgba(255,255,255,0.85); margin-top: 0.75rem; }
+
+    /* ── RESOURCES ── */
+    .resources-section {
+      background: linear-gradient(135deg, #f4f7ff 0%, #e8eeff 100%);
+      border-top: 2px solid var(--blue-pale);
+    }
+    .resources-intro {
+      text-align: center; max-width: 620px; margin: 0 auto 2.5rem;
+    }
+    .resources-intro .section-label { justify-content: center; display: block; text-align: center; }
+    .resources-intro .section-title { text-align: center; }
+    .resources-intro .section-sub { margin: 0 auto; text-align: center; }
+    .resources-callout {
+      background: var(--blue-deep);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.6rem;
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 2rem;
+      color: var(--white);
+    }
+    .resources-callout .rc-icon { font-size: 1.8rem; flex-shrink: 0; }
+    .resources-callout p { font-size: 0.97rem; line-height: 1.55; }
+    .resources-callout p strong { color: var(--yellow); }
+    .resources-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; }
+    .resource-card {
+      background: var(--white);
+      border: 2px solid var(--blue-pale);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-decoration: none; color: inherit;
+      display: flex; flex-direction: column;
+      transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .resource-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    }
+    .resource-card.academy::before { background: linear-gradient(90deg, var(--blue-royal), var(--blue-bright)); }
+    .resource-card.press::before   { background: linear-gradient(90deg, var(--yellow), #f59e0b); }
+    .resource-card:hover { box-shadow: var(--shadow); transform: translateY(-4px); border-color: var(--blue-bright); }
+    .rc-logo { font-size: 2.5rem; margin-bottom: 1rem; }
+    .rc-name {
+      font-size: 1.2rem; font-weight: 900; letter-spacing: -0.01em;
+      color: var(--blue-deep); margin-bottom: 0.4rem;
+    }
+    .rc-tagline {
+      font-size: 0.82rem; font-weight: 700;
+      color: var(--blue-royal); text-transform: uppercase;
+      letter-spacing: 0.07em; margin-bottom: 0.85rem;
+    }
+    .resource-card p { font-size: 0.92rem; color: var(--text-mid); line-height: 1.65; flex: 1; }
+    .rc-cta {
+      margin-top: 1.5rem;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.88rem; font-weight: 800; color: var(--blue-royal);
+    }
+    .resource-card.press .rc-cta { color: #d97706; }
+    .resource-card.press .rc-name { color: #92400e; }
+    .about-text h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .about-text p { font-size: 1rem; color: var(--text-mid); line-height: 1.75; margin-bottom: 1rem; }
+    .social-follow-links { display: flex; gap: 0.75rem; margin-top: 1.25rem; flex-wrap: wrap; }
+    .follow-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.55rem 1.1rem;
+      border-radius: 100px; text-decoration: none;
+      font-size: 0.88rem; font-weight: 800;
+      transition: all 0.2s;
+    }
+    .follow-linkedin { background: #0a66c2; color: #fff; }
+    .follow-linkedin:hover { background: #0858a8; }
+    .follow-facebook { background: #1877f2; color: #fff; }
+    .follow-facebook:hover { background: #1468da; }
+    .follow-spotify { background: #1db954; color: #fff; }
+    .follow-spotify:hover { background: #18a749; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #0a1e5e;
+      padding: 3rem 2rem 2rem;
+      color: rgba(255,255,255,0.7);
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr;
+      gap: 3rem; margin-bottom: 2.5rem;
+    }
+    .footer-brand img { height: 48px; margin-bottom: 1rem; }
+    .footer-brand p { font-size: 0.88rem; line-height: 1.65; max-width: 280px; }
+    .footer-brand .tagline-footer {
+      font-family: 'Lora', serif; font-style: italic;
+      color: var(--yellow); margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .footer-col h4 { font-size: 0.82rem; font-weight: 900; color: var(--white); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 1rem; }
+    .footer-col a { display: block; color: rgba(255,255,255,0.65); text-decoration: none; font-size: 0.88rem; margin-bottom: 0.5rem; transition: color 0.15s; }
+    .footer-col a:hover { color: var(--yellow); }
+    .footer-bottom {
+      max-width: 1100px; margin: 0 auto;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 1.25rem;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.8rem; flex-wrap: wrap; gap: 0.5rem;
+    }
+
+    .ep-loading {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 1.5rem; color: var(--text-light); font-size: 0.9rem; font-weight: 700;
+    }
+    .ep-spinner {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 3px solid var(--blue-pale);
+      border-top-color: var(--blue-royal);
+      animation: spin 0.8s linear infinite; flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-10px); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero-inner, .podcast-grid, .app-grid, .about-grid { grid-template-columns: 1fr; }
+      .hero-image { order: -1; }
+      .hero-image img { width: 220px; }
+      .blog-grid { grid-template-columns: 1fr 1fr; }
+      .social-grid { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; }
+      .trust-bar { gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Facebook SDK -->
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v25.0&appId=APP_ID"></script>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <img src="BTF_podcast_cover.png" alt="Beyond the Feature logo" />
+    <span>Beyond the Feature</span>
+  </a>
+  <div class="nav-links">
+    <a href="#podcast">Podcast</a>
+    <a href="#app">App</a>
+    <a href="#blog">Blog</a>
+    <a href="#resources">Resources</a>
+    <a href="#about">About</a>
+    <a href="#app" class="nav-cta btn">Get the App</a>
+  </div>
+  <div class="nav-hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-badge">🎙️ Podcast + App + Learning</div>
+      <h1>Work <span>Smarter</span><br />with Microsoft 365</h1>
+      <p class="hero-tagline">"Changing workflows, not hunting features."</p>
+      <p class="hero-desc">
+        Dr. Patrick Jones helps everyday Microsoft 365 users transform the way they work —
+        through practical tips, real-world workflows, and a learning app that meets you where you are.
+      </p>
+      <div class="hero-btns">
+        <a href="https://www.youtube.com/playlist?list=PLOE0KN6HCHgZEQBMi8HvrLX-X2VqQQndI" target="_blank" class="btn btn-primary">🎧 Listen to the Podcast</a>
+        <a href="#app" class="btn btn-outline">📱 Get the App</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="BTF_podcast_cover.png" alt="Beyond the Feature" />
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><span class="icon">🎙️</span> On Spotify, Apple, YouTube & Amazon Music</div>
+  <div class="trust-item"><span class="icon">📱</span> App on Google Play & App Store</div>
+  <div class="trust-item"><span class="icon">📚</span> 100+ Lessons & Counting</div>
+  <div class="trust-item"><span class="icon">🏆</span> Streaks, Ratings & Lesson Reflections</div>
+</div>
+
+<!-- PODCAST -->
+<section class="podcast-section" id="podcast">
+  <div class="section-inner">
+    <div class="podcast-grid">
+      <div>
+        <img src="BTF_podcast_cover.png" alt="Beyond the Feature Podcast Cover" class="podcast-cover" />
+      </div>
+      <div>
+        <div class="section-label">🎙️ The Podcast</div>
+        <h2 class="section-title">Stop Hunting.<br />Start Doing.</h2>
+        <p class="section-sub">
+          Each episode unpacks a real Microsoft 365 workflow so you can spend less time digging through menus and more time actually getting work done.
+        </p>
+        <div class="podcast-listen-title">Listen On</div>
+        <div class="platform-links">
+          <a class="platform-btn" href="https://open.spotify.com/show/7HEIdp28S8xHQ8fs6Ia3nr" target="_blank">🟢 Spotify</a>
+          <a class="platform-btn" href="https://podcasts.apple.com/us/podcast/beyond-the-feature/id1850724870" target="_blank">🎵 Apple Podcasts</a>
+          <a class="platform-btn" href="https://www.youtube.com/playlist?list=PLOE0KN6HCHgZEQBMi8HvrLX-X2VqQQndI" target="_blank">▶️ YouTube</a>
+          <a class="platform-btn" href="https://music.amazon.com/podcasts/ab0ecf88-24ae-4a9f-96bb-206013a3b195/beyond-the-feature" target="_blank">🎶 Amazon Music</a>
+          <a class="platform-btn" href="#" target="_blank">📡 RSS Feed</a>
+        </div>
+        <div id="episode-list" class="episode-list">
+          <!-- Episodes load dynamically from YouTube -->
+          <div class="ep-loading">
+            <div class="ep-spinner"></div>
+            <span>Loading latest episodes...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APP -->
+<section class="app-section" id="app">
+  <div class="section-inner">
+    <div class="app-grid">
+      <div>
+        <div class="section-label" style="color:var(--yellow)">📱 The Learning App</div>
+        <h2 class="section-title">Beyond the Feature App</h2>
+        <p class="section-sub">
+          100+ bite-sized lessons, streak tracking, lesson ratings, and personal reflections — with free, premium, and enterprise tiers. Learn Microsoft 365 on your schedule.
+        </p>
+        <div class="feature-cards">
+          <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <div>
+              <h4>Concept + Challenge Format</h4>
+              <p>Every lesson pairs a clear concept with a real-world challenge — so you don't just learn it, you apply it the same day.</p>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔥</div>
+            <div>
+              <h4>Streaks, Ratings & Reflections</h4>
+              <p>Build a daily habit with streak tracking, rate each lesson, and capture your own reflections to reinforce what you've learned.</p>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🏢</div>
+            <div>
+              <h4>Enterprise Ready</h4>
+              <p>Corporate email validation for enterprise access. Train your whole team on M365 productivity.</p>
+            </div>
+          </div>
+        </div>
+        <div class="app-store-btns">
+          <a href="https://play.google.com/store/apps/details?id=com.beyondthefeature.app" target="_blank" class="store-btn">
+            <div class="store-btn-icon">▶</div>
+            <div>
+              <div class="store-btn-label">Download on</div>
+              <div class="store-btn-name">Google Play</div>
+            </div>
+          </a>
+          <a href="#" class="store-btn" style="opacity:0.6; cursor: default;">
+            <div class="store-btn-icon">🍎</div>
+            <div>
+              <div class="store-btn-label">Coming Soon to the</div>
+              <div class="store-btn-name">App Store</div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="app-mockup">
+        <div class="app-screenshot-wrap">
+          <img src="screenshot.png" alt="Beyond the Feature app screenshot showing Lesson 1: Adoption Before Automation" class="app-screenshot" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSIGHTS HUB -->
+<section class="insights-section" id="blog">
+  <div class="section-inner">
+    <div class="section-label">📣 Stay Connected</div>
+    <h2 class="section-title">Follow Along</h2>
+    <p class="section-sub">Get the latest Microsoft 365 tips, episode drops, and workflow ideas — straight from Patrick's feeds.</p>
+    <div class="insights-layout">
+
+      <!-- Facebook Panel -->
+      <div class="fb-panel">
+        <div class="fb-panel-header">
+          <div class="li-icon">📘</div>
+          <h3>Facebook</h3>
+          <!-- 🔧 UPDATE: Replace href with your real Facebook Page URL -->
+          <a href="https://www.facebook.com/profile.php?id=61586719380907" target="_blank" class="fb-follow-btn">+ Follow</a>
+        </div>
+        <div class="fb-embed-area">
+          <!--
+            🔧 HOW TO ADD YOUR LIVE FACEBOOK FEED:
+            1. Go to: https://developers.facebook.com/docs/plugins/page-plugin
+            2. Enter your Facebook Page URL
+            3. Set width to 500, check "Timeline"
+            4. Click "Get Code" and paste the two code snippets here
+            5. Delete the fb-placeholder div below once you've added it
+          -->
+          <div class="fb-page" data-href="https://www.facebook.com/profile.php?id=61586719380907" data-tabs="timeline" data-width="500" data-height="" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/profile.php?id=61586719380907" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/profile.php?id=61586719380907">Beyond the Feature</a></blockquote></div>
+        </div>
+        <div class="fb-panel-footer">
+          📣 A live Facebook feed keeps this page fresh for search engines automatically
+        </div>
+      </div>
+
+      <!-- LinkedIn CTA Panel -->
+      <div class="li-panel">
+        <div class="li-panel-header">
+          <div class="li-icon">💼</div>
+          <h3>LinkedIn</h3>
+          <!-- 🔧 UPDATE: Replace href with your real LinkedIn profile or Page URL -->
+          <a href="https://www.linkedin.com/company/beyond-the-feature" target="_blank" class="li-follow-btn">+ Follow</a>
+        </div>
+        <div class="li-cta-body">
+          <div class="li-cta-icon">💼</div>
+          <h4>Connect on LinkedIn</h4>
+          <p>Patrick posts practical Microsoft 365 tips, workflow ideas, and episode updates on LinkedIn regularly. It's the best place to join the conversation, share your own tips, and stay sharp on everything M365.</p>
+          <a href="https://www.linkedin.com/company/beyond-the-feature" target="_blank" class="btn btn-linkedin">
+            Follow Beyond the Feature on LinkedIn →
+          </a>
+        </div>
+        <div class="li-panel-footer">
+          <a href="https://www.linkedin.com/company/beyond-the-feature" target="_blank">View Beyond the Feature on LinkedIn →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section" id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="about-avatar">
+        <img src="patrick-jones.png" alt="Dr. Patrick Jones presenting" />
+      </div>
+      <div class="about-text">
+        <div class="section-label">👋 About</div>
+        <h2 class="section-title">Meet Dr. Patrick Jones</h2>
+        <p>
+          Dr. Patrick Jones is a Microsoft 365 productivity expert, educator, and app developer with a passion for helping organizations and individuals actually use the tools they're paying for.
+        </p>
+        <p>
+          Through the <strong>Beyond the Feature</strong> podcast and learning app, Patrick cuts through the complexity of Microsoft 365 — delivering practical, real-world workflows that change how people work every day.
+        </p>
+        <p>
+          Whether you're a solo professional, a team lead, or an IT administrator, Beyond the Feature meets you where you are and helps you go further.
+        </p>
+        <div class="social-follow-links">
+          <a href="https://www.linkedin.com/in/patrickjones4/" target="_blank" class="follow-btn follow-linkedin">💼 LinkedIn</a>
+          <a href="https://www.facebook.com/profile.php?id=61586719380907" target="_blank" class="follow-btn follow-facebook">📘 Facebook</a>
+          <a href="https://open.spotify.com/show/7HEIdp28S8xHQ8fs6Ia3nr" target="_blank" class="follow-btn follow-spotify">🎧 Spotify</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESOURCES -->
+<section class="resources-section" id="resources">
+  <div class="section-inner">
+    <div class="resources-intro">
+      <div class="section-label">📚 Go Deeper</div>
+      <h2 class="section-title">Ready for More?</h2>
+      <p class="section-sub">If you want to go all-in on Microsoft 365 learning, these are your first stops — full courses and books from Dr. Patrick Jones.</p>
+    </div>
+    <div class="resources-callout">
+      <div class="rc-icon">🚀</div>
+      <p>The podcast and app are a great start — but when you're ready to <strong>go deeper</strong>, Olympus Academy and Olympus Academy Press have everything you need to master Microsoft 365 from the ground up.</p>
+    </div>
+    <div class="resources-grid">
+      <a href="https://olympusacademy.net/olympus-academy-website" target="_blank" class="resource-card academy">
+        <div class="rc-logo">🎓</div>
+        <div class="rc-name">Olympus Academy</div>
+        <div class="rc-tagline">Online Courses</div>
+        <p>Full-length, structured online courses on Microsoft 365, productivity, and professional development — taught by Dr. Patrick Jones. Your next level starts here.</p>
+        <div class="rc-cta">Explore Courses →</div>
+      </a>
+      <a href="https://www.olympusacademypress.com" target="_blank" class="resource-card press">
+        <div class="rc-logo">📖</div>
+        <div class="rc-name">Olympus Academy Press</div>
+        <div class="rc-tagline">Books & Study Guides</div>
+        <p>In-depth books and study guides for Microsoft 365 certifications and beyond — including the MS-102 exam guide written by Dr. Patrick Jones himself.</p>
+        <div class="rc-cta">Browse Books →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="BTF_podcast_cover.png" alt="Beyond the Feature" />
+      <p>Helping Microsoft 365 users work smarter, not harder — through practical education, a community podcast, and a gamified learning app.</p>
+      <p class="tagline-footer">"Changing workflows, not hunting features."</p>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <a href="#podcast">Podcast</a>
+      <a href="#app">The App</a>
+      <a href="#blog">Follow Along</a>
+      <a href="#resources">Resources</a>
+      <a href="#about">About Patrick</a>
+    </div>
+    <div class="footer-col">
+      <h4>Listen & Watch</h4>
+      <a href="https://olympusacademy.net/olympus-academy-website" target="_blank">🎓 Olympus Academy</a>
+      <a href="https://www.olympusacademypress.com" target="_blank">📖 Olympus Academy Press</a>
+      <a href="https://open.spotify.com/show/7HEIdp28S8xHQ8fs6Ia3nr" target="_blank">Spotify</a>
+      <a href="https://podcasts.apple.com/us/podcast/beyond-the-feature/id1850724870" target="_blank">Apple Podcasts</a>
+      <a href="https://www.youtube.com/playlist?list=PLOE0KN6HCHgZEQBMi8HvrLX-X2VqQQndI" target="_blank">YouTube</a>
+      <a href="https://music.amazon.com/podcasts/ab0ecf88-24ae-4a9f-96bb-206013a3b195/beyond-the-feature" target="_blank">Amazon Music</a>
+      <a href="https://www.linkedin.com/in/patrickjones4/" target="_blank">LinkedIn</a>
+      <a href="https://www.facebook.com/profile.php?id=61586719380907" target="_blank">Facebook</a>
+      <a href="mailto:PJONES@AUDITSOLV.COM">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Beyond the Feature · Dr. Patrick Jones</span>
+    <span>beyondthefeature.com</span>
+  </div>
+</footer>
+
+<!-- POWERED BY AUDITSOLV -->
+<div class="powered-by">
+  <span>Powered by</span>
+  <a href="https://www.auditsolv.com" target="_blank" rel="noopener">
+    <img src="AUDITSOLV_LOGO_color.png" alt="AuditSolv – At Your Service" />
+  </a>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  function toggleMenu() {
+    const links = document.querySelector('.nav-links');
+    links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+    if (links.style.display === 'flex') {
+      links.style.flexDirection = 'column';
+      links.style.position = 'absolute';
+      links.style.top = '64px';
+      links.style.right = '0';
+      links.style.background = '#1a3fa8';
+      links.style.padding = '1rem';
+      links.style.borderRadius = '0 0 12px 12px';
+      links.style.width = '200px';
+    }
+  }
+
+  // Dynamic YouTube episode loader via Netlify function
+  async function loadYouTubeEpisodes() {
+    const container = document.getElementById('episode-list');
+    try {
+      const res = await fetch('/.netlify/functions/episodes');
+      const data = await res.json();
+      if (!data.episodes || !data.episodes.length) throw new Error('No episodes');
+
+      const labels = ['Latest', '2nd', '3rd'];
+      container.innerHTML = data.episodes.map((ep, i) => {
+        const date = ep.published
+          ? new Date(ep.published).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+          : '';
+        return `
+          <a href="${ep.link}" target="_blank" class="episode-card">
+            <div class="ep-num">EP<br/>${labels[i]}</div>
+            <div class="ep-info">
+              <h4>${ep.title}</h4>
+              <p>${ep.desc ? ep.desc + '…' : 'Watch on YouTube'} ${date ? `<span style="color:var(--text-light);font-size:0.75rem;">${date}</span>` : ''}</p>
+            </div>
+            <div class="ep-arrow">→</div>
+          </a>`;
+      }).join('');
+
+      container.querySelectorAll('.episode-card').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.5s ease, transform 0.5s ease, box-shadow 0.2s, border-color 0.2s';
+        observer.observe(el);
+      });
+
+    } catch (e) {
+      container.innerHTML = `
+        <a href="https://www.youtube.com/playlist?list=PLOE0KN6HCHgZEQBMi8HvrLX-X2VqQQndI" target="_blank" class="episode-card">
+          <div class="ep-num">▶️</div>
+          <div class="ep-info">
+            <h4>Watch All Episodes on YouTube</h4>
+            <p>Click to browse the full Beyond the Feature episode playlist</p>
+          </div>
+          <div class="ep-arrow">→</div>
+        </a>`;
+    }
+  }
+  loadYouTubeEpisodes();
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.episode-card, .feature-card, .blog-card, .social-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.styl
